@@ -21,7 +21,7 @@ buyFreshTicket(): Lets you purchase NFT ticket against the token and token price
    - After approval, they can do a separate transaction and purchase the NFT ticket for the fixed price
 
 ## Trader smart contract functioning:
-1. fulfillTicketSale(string memory orderId, uint256 price, address seller, uint256 ticketId, bytes memory signature): Lets a user purchase ticket via secondary sale, and defined royalty goes to Ticket Smart Contract owner. The way it works is as follows:
+fulfillTicketSale(string memory orderId, uint256 price, address seller, uint256 ticketId, bytes memory signature): Lets a user purchase ticket via secondary sale, and defined royalty goes to Ticket Smart Contract owner. The way it works is as follows:
    - Sale details are taken from a ticket owner and stored in a database in case for a proper marketplace
    - orderid is to be unique. Easy generation could be `ethers.utils.id(timestamp + tokenId + seller)`, where tiemstamp, tokenId, and seller are strings
    - Message hash is generated using function getMessageHash and signed with signer.signMessage(ethers.toBeArray(msghash)) by the seller
@@ -30,3 +30,5 @@ buyFreshTicket(): Lets you purchase NFT ticket against the token and token price
    - Before this function is called, the buyer must have called approve(address spender, uint256 amount) before purchasing transaction in the coin smart contract and approve atleast 'price' amount of their own tokens to the Trader smart contract
    - Also, before this function is called, the seller must have either called approve(address to, uint256 tokenId) or setApprovalForAll(address operator, bool approved) and approved the Trader smart contract to handle their Ticket(s) on the seller's behalf.
    - Upon all conditions being met, buyer gets the NFT Ticket from the seller.
+
+(the rest of the functions are used to facilitate fulfillTicketSale function itself and have respective documentation in the .sol files themselves)
