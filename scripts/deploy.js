@@ -14,26 +14,29 @@ async function main() {
   const ticketName = "Tickets";
   const ticketSymbol = "TKT";
 
-  const pricePerTicket = hre.ethers.formatUnits("1", "ether");
+  const pricePerTicket = hre.ethers.parseUnits("1", "ether");
   const royaltyNumerator = 1000;
 
   // Contracts are deployed using the first signer/account by default
   const [owner] = await hre.ethers.getSigners();
 
-  const Coin = await hre.ethers.getContractFactory("Coin");
-  const coin = await Coin.deployContract(tokenName, tokenSymbol); // owner gets 50000 SIMP
+  const coin = await hre.ethers.deployContract("Coin", [tokenName, tokenSymbol]); // owner gets 50000 SIMP
   await coin.waitForDeployment();
-  console.log("coin deployed at:", coin.address);
+  console.log("Coin deployed at:", coin.target);
 
-  const Ticket = await hre.ethers.getContractFactory("Ticket");
-  const ticket = await Ticket.deploy(ticketName,
+
+  const ticket = await hre.ethers.deployContract("Ticket", [ticketName,
     ticketSymbol,
-    coin.address,
+    coin.target,
     pricePerTicket,
     owner,
-    royaltyNumerator);
+    royaltyNumerator]);
   await ticket.waitForDeployment();
-  console.log("NFT Ticket contract deployed at:", ticket.address);
+  console.log("NFT Ticket contract deployed at:", ticket.target);
+
+  const trader = await hre.ethers.deployContract("Trader", [coin.target, ticket.target, pricePerTicket]); // owner gets 50000 SIMP
+  await trader.waitForDeployment();
+  console.log("Trader deployed at:", trader.target);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
